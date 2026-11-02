@@ -1,0 +1,10 @@
+services:
+  downloader-bot:
+    build: .
+    container_name: downloader-bot
+    restart: unless-stopped
+    volumes:
+      - ./downloads:/app/downloads
+      - ./.env:/app/.env
+    env_file:
+      - .env
