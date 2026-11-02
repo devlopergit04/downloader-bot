@@ -43,10 +43,10 @@
 
 ## 🚀 نصب و اجرا
 
-### روش ۱:འམ་جانی (local)
+### روش ۱:محلی (local)
 
 ```bash
-git clone <repo-url>
+git clone <https://github.com/devlopergit04/downloader-bot>
 cd downloader-bot
 
 python3 -m venv .venv
