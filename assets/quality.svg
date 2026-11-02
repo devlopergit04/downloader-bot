@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="400" height="200" role="img" aria-label="Full quality badge">
+  <defs>
+    <linearGradient id="q-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="q-accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#14b8a6"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="392" height="192" rx="20" fill="url(#q-bg)"/>
+  <rect x="4" y="4" width="392" height="192" rx="20" fill="none" stroke="#6366f1" stroke-width="1.5" opacity="0.4"/>
+  <g transform="translate(36,52)">
+    <rect x="0" y="0" width="52" height="52" rx="14" fill="url(#q-accent)"/>
+    <path d="M26 14 V32 M26 32 L16 22 M26 32 L36 22" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="100" y="70" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#f8fafc">کیفیت کامل</text>
+  <text x="36" y="130" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" fill="#c7d2fe">• بهترین فرمت video+audio به‌صورت ترکیبی</text>
+  <text x="36" y="158" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" fill="#c7d2fe">• رزولوشن بالا + bitrate بهینه</text>
+</svg>
