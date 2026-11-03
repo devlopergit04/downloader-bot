@@ -1,60 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-label="Downloader Bot banner">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-label="Downloader Bot animated banner">
   <defs>
     <linearGradient id="hero-bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0f172a"/>
-      <stop offset="0.55" stop-color="#1e1b4b"/>
-      <stop offset="1" stop-color="#312e81"/>
+      <stop offset="0" stop-color="#021a15"/>
+      <stop offset="0.55" stop-color="#022c22"/>
+      <stop offset="1" stop-color="#064e3b"/>
     </linearGradient>
     <linearGradient id="hero-accent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#6366f1"/>
-      <stop offset="1" stop-color="#14b8a6"/>
+      <stop offset="0" stop-color="#10b981"/>
+      <stop offset="1" stop-color="#34d399"/>
     </linearGradient>
     <radialGradient id="hero-glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#6366f1" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#6366f1" stop-opacity="0"/>
+      <stop offset="0" stop-color="#10b981" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#10b981" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
   <rect width="1200" height="360" fill="url(#hero-bg)"/>
-  <circle cx="980" cy="90" r="260" fill="url(#hero-glow)"/>
-  <circle cx="180" cy="320" r="180" fill="url(#hero-glow)" opacity="0.6"/>
+  <circle cx="980" cy="90" r="260" fill="url(#hero-glow)">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="180" cy="320" r="180" fill="url(#hero-glow)" opacity="0.6">
+    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="6s" repeatCount="indefinite"/>
+  </circle>
 
-  <!-- decorative grid dots -->
-  <g fill="#6366f1" opacity="0.25">
-    <circle cx="120" cy="80" r="3"/><circle cx="150" cy="80" r="3"/><circle cx="180" cy="80" r="3"/>
-    <circle cx="120" cy="110" r="3"/><circle cx="150" cy="110" r="3"/>
+  <!-- floating particles -->
+  <g fill="#34d399">
+    <circle cx="120" cy="80" r="3"><animate attributeName="cy" values="80;60;80" dur="4s" repeatCount="indefinite"/></circle>
+    <circle cx="150" cy="110" r="2.5"><animate attributeName="cy" values="110;90;110" dur="5s" repeatCount="indefinite"/></circle>
+    <circle cx="180" cy="70" r="3"><animate attributeName="cy" values="70;50;70" dur="3.5s" repeatCount="indefinite"/></circle>
   </g>
 
-  <!-- logo mark -->
+  <!-- animated logo mark -->
   <g transform="translate(80,120)">
-    <rect x="0" y="0" width="120" height="120" rx="30" fill="url(#hero-accent)"/>
+    <rect x="0" y="0" width="120" height="120" rx="30" fill="url(#hero-accent)">
+      <animate attributeName="opacity" values="0.85;1;0.85" dur="2s" repeatCount="indefinite"/>
+    </rect>
     <g fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M60 24 V72"/>
-      <path d="M40 58 L60 78 L80 58"/>
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="0 0; 0 8; 0 0" dur="1.6s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+        <path d="M60 24 V72"/>
+        <path d="M40 58 L60 78 L80 58"/>
+      </g>
       <rect x="34" y="92" width="52" height="9" rx="4.5" fill="#ffffff" stroke="none"/>
     </g>
   </g>
 
   <!-- title -->
-  <text x="240" y="170" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#f8fafc">Downloader Bot</text>
-  <text x="244" y="210" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="24" fill="#c7d2fe">هر گونه رسانه از هزاران سایت — با کیفیت کامل</text>
+  <text x="240" y="170" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#ecfdf5">Downloader Bot</text>
+  <text x="244" y="210" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="24" fill="#a7f3d0">هر گونه رسانه از هزاران سایت — با کیفیت کامل</text>
 
-  <!-- progress bar motif -->
+  <!-- animated progress bar -->
   <g transform="translate(244,250)">
-    <rect x="0" y="0" width="420" height="14" rx="7" fill="#312e81"/>
-    <rect x="0" y="0" width="300" height="14" rx="7" fill="url(#hero-accent)"/>
-    <circle cx="300" cy="7" r="7" fill="#f8fafc"/>
+    <rect x="0" y="0" width="420" height="14" rx="7" fill="#064e3b"/>
+    <rect x="0" y="0" width="0" height="14" rx="7" fill="url(#hero-accent)">
+      <animate attributeName="width" values="0;300;0" dur="4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
+    </rect>
+    <circle cx="300" cy="7" r="7" fill="#ecfdf5">
+      <animate attributeName="cx" values="0;300;0" dur="4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
+    </circle>
   </g>
 
   <!-- floating engine chips -->
   <g transform="translate(940,230)">
-    <rect x="0" y="0" width="180" height="46" rx="12" fill="#0f172a" stroke="#6366f1" stroke-width="1.5"/>
-    <text x="20" y="29" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" fill="#e0e7ff">yt-dlp</text>
-    <circle cx="160" cy="23" r="5" fill="#14b8a6"/>
+    <rect x="0" y="0" width="180" height="46" rx="12" fill="#021a15" stroke="#10b981" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="20" y="29" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" fill="#d1fae5">yt-dlp</text>
+    <circle cx="160" cy="23" r="5" fill="#34d399"><animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/></circle>
   </g>
   <g transform="translate(940,170)">
-    <rect x="0" y="0" width="200" height="46" rx="12" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.5"/>
-    <text x="20" y="29" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" fill="#e0e7ff">gallery-dl</text>
-    <circle cx="180" cy="23" r="5" fill="#8b5cf6"/>
+    <rect x="0" y="0" width="200" height="46" rx="12" fill="#021a15" stroke="#10b981" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="1;0.4;1" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="20" y="29" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" fill="#d1fae5">gallery-dl</text>
+    <circle cx="180" cy="23" r="5" fill="#10b981"><animate attributeName="r" values="5;8;5" dur="2.4s" repeatCount="indefinite"/></circle>
   </g>
 </svg>

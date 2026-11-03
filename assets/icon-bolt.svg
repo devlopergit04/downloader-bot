@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Bolt animated">
+  <defs>
+    <linearGradient id="b-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a7f3d0"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="none" stroke="url(#b-grad)" stroke-width="3"/>
+  <path d="M34 8 L16 36 H30 L28 56 L48 26 H34 Z" fill="url(#b-grad)" stroke="#065f46" stroke-width="1.5" stroke-linejoin="round">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="1s" repeatCount="indefinite"/>
+  </path>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 140" width="1200" height="140" role="img" aria-label="Supported sites animated strip">
+  <defs>
+    <linearGradient id="s-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#022c22"/>
+      <stop offset="1" stop-color="#021a15"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="140" rx="18" fill="url(#s-bg)" stroke="#065f46" stroke-width="1.5"/>
+
+  <!-- moving dotted line -->
+  <line x1="40" y1="70" x2="1160" y2="70" stroke="#10b981" stroke-width="2" stroke-dasharray="8 8">
+    <animate attributeName="stroke-dashoffset" values="0;-16" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- site chips with pulsing glow -->
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" fill="#d1fae5" text-anchor="middle">
+    <g transform="translate(90,46)">
+      <rect x="0" y="0" width="150" height="48" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"><animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/></rect>
+      <text x="75" y="30" fill="#ecfdf5">YouTube</text>
+    </g>
+    <g transform="translate(270,46)">
+      <rect x="0" y="0" width="110" height="48" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"><animate attributeName="stroke-opacity" values="1;0.4;1" dur="2.5s" begin="0.2s" repeatCount="indefinite"/></rect>
+      <text x="55" y="30" fill="#ecfdf5">TikTok</text>
+    </g>
+    <g transform="translate(410,46)">
+      <rect x="0" y="0" width="160" height="48" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"><animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="2.5s" begin="0.4s" repeatCount="indefinite"/></rect>
+      <text x="80" y="30" fill="#ecfdf5">Instagram</text>
+    </g>
+    <g transform="translate(600,46)">
+      <rect x="0" y="0" width="120" height="48" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"><animate attributeName="stroke-opacity" values="1;0.4;1" dur="2.5s" begin="0.6s" repeatCount="indefinite"/></rect>
+      <text x="60" y="30" fill="#ecfdf5">Twitter / X</text>
+    </g>
+    <g transform="translate(750,46)">
+      <rect x="0" y="0" width="140" height="48" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"><animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="2.5s" begin="0.8s" repeatCount="indefinite"/></rect>
+      <text x="70" y="30" fill="#ecfdf5">Twitch</text>
+    </g>
+    <g transform="translate(920,46)">
+      <rect x="0" y="0" width="130" height="48" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"><animate attributeName="stroke-opacity" values="1;0.4;1" dur="2.5s" begin="1s" repeatCount="indefinite"/></rect>
+      <text x="65" y="30" fill="#ecfdf5">SoundCloud</text>
+    </g>
+    <g transform="translate(1080,46)">
+      <rect x="0" y="0" width="110" height="48" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1.5"><animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="2.5s" begin="1.2s" repeatCount="indefinite"/></rect>
+      <text x="55" y="30" fill="#ecfdf5">GitHub</text>
+    </g>
+  </g>
+</svg>
