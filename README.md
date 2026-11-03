@@ -14,6 +14,10 @@
   <img src="assets/icon-image.svg" width="64" alt="تصویر"/>
   <img src="assets/icon-audio.svg" width="64" alt="صدا"/>
   <img src="assets/icon-file.svg" width="64" alt="فایل"/>
+  <img src="assets/icon-cloud.svg" width="64" alt="دانلود"/>
+  <img src="assets/icon-play.svg" width="64" alt="پخش"/>
+  <img src="assets/icon-bolt.svg" width="64" alt="سرعت"/>
+  <img src="assets/icon-check.svg" width="64" alt="تأیید"/>
 </p>
 
 - **ژنریک و هوشمند** — ربات خود تشخیص می‌دهد که لینک کدام نوع رسانه است و صحن‌ترین ابزار را انتخاب می‌کند.
@@ -23,6 +27,8 @@
 - **بسته و آماده** — قابل اجرا با یک دستور یا Docker.
 
 <p align="center"><img src="assets/quality.svg" width="400" alt="کیفیت کامل"/></p>
+
+<p align="center"><img src="assets/support.svg" width="100%" alt="badges"/></p>
 
 ---
 
@@ -44,6 +50,8 @@
 ## 🚀 نصب و اجرا
 
 ### روش ۱:محلی (local)
+
+<p align="center"><img src="assets/loader.svg" width="90" alt="در حال دانلود"/></p>
 
 ```bash
 git clone <https://github.com/devlopergit04/downloader-bot>
@@ -101,7 +109,7 @@ https://example.com/file.zip
 
 ## ⚙️ تنظیمات
 
-همه تنظیمات از فایل `.env`خوانده می‌شوند:
+همه تنظیمات از فایل `.env` خوانده می‌شوند:
 
 | متغیر | ضروری | توضیح |
 |--------|:------:|--------|
@@ -130,7 +138,7 @@ downloader-bot/
 │   ├── commands.py       # /start, /help, /ping, /cancel
 │   └── messages.py       # دستیار پیام‌های متنی
 ├── assets/               # فایل‌های SVG تمیز و مرتب
-├── scripts/run.sh        # شاره‌ی اجرای سریع
+├── scripts/run.sh        # دستور اجرا
 ├── Dockerfile
 ├── docker-compose.yml
 └── requirements.txt
@@ -139,6 +147,8 @@ downloader-bot/
 ---
 
 ## 🎬 پشتیبانی‌ها
+
+<p align="center"><img src="assets/sites.svg" width="100%" alt="سایت‌های پشتیبانی"/></p>
 
 ربات از موتور‌های زیر پشتیبانی می‌کند:
 

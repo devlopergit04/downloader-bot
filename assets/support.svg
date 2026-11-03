@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 130" width="1200" height="130" role="img" aria-label="Support badges animated">
+  <defs>
+    <linearGradient id="sp-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#021a15"/>
+      <stop offset="1" stop-color="#022c22"/>
+    </linearGradient>
+    <linearGradient id="sp-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#10b981"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="130" rx="18" fill="url(#sp-bg)" stroke="#065f46" stroke-width="1.5"/>
+
+  <!-- badge 1: speed (spinning gauge) -->
+  <g transform="translate(90,65)">
+    <circle cx="0" cy="0" r="34" fill="#064e3b" stroke="#10b981" stroke-width="2"/>
+    <circle cx="0" cy="0" r="24" fill="none" stroke="#065f46" stroke-width="5"/>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/>
+      <path d="M0 -24 L6 0 L0 6 L-6 0 Z" fill="url(#sp-grad)"/>
+    </g>
+    <text x="0" y="8" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" fill="#ecfdf5">سریع</text>
+  </g>
+
+  <!-- badge 2: quality (pulsing star) -->
+  <g transform="translate(240,65)">
+    <path d="M0 -26 L8 -8 L28 -6 L13 8 L18 28 L0 16 L-18 28 L-13 8 L-28 -6 L-8 -8 Z" fill="url(#sp-grad)">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+    <text x="0" y="48" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" fill="#ecfdf5">کیفیت کامل</text>
+  </g>
+
+  <!-- badge 3: secure (pulsing shield) -->
+  <g transform="translate(520,65)">
+    <path d="M0 -28 L22 -20 V2 C22 14 12 22 0 28 C-12 22 -22 14 -22 2 V-20 Z" fill="none" stroke="url(#sp-grad)" stroke-width="3"/>
+    <path d="M-10 0 L-2 8 L12 -8" fill="none" stroke="#34d399" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#10b981" stroke-width="1.5" opacity="0.4">
+      <animate attributeName="r" values="30;40;30" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="0" y="48" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" fill="#ecfdf5">محفوظ</text>
+  </g>
+
+  <!-- badge 4: 24/7 (spinning ring) -->
+  <g transform="translate(780,65)">
+    <circle cx="0" cy="0" r="26" fill="none" stroke="#065f46" stroke-width="5"/>
+    <circle cx="0" cy="0" r="26" fill="none" stroke="url(#sp-grad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="30 100">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <text x="0" y="6" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" fill="#ecfdf5">24/7</text>
+    <text x="0" y="48" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" fill="#ecfdf5">همیشه زنده</text>
+  </g>
+
+  <!-- badge 5: multi-engine (orbiting dots) -->
+  <g transform="translate(1040,65)">
+    <circle cx="0" cy="0" r="26" fill="#064e3b" stroke="#10b981" stroke-width="2"/>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.5s" repeatCount="indefinite"/>
+      <circle cx="0" cy="-20" r="5" fill="#34d399"/>
+      <circle cx="17" cy="10" r="4" fill="#10b981"/>
+      <circle cx="-17" cy="10" r="4" fill="#a7f3d0"/>
+    </g>
+    <circle cx="0" cy="0" r="6" fill="url(#sp-grad)"/>
+    <text x="0" y="48" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" fill="#ecfdf5">چند موتوره</text>
+  </g>
+</svg>
