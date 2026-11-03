@@ -1,0 +1,4 @@
+# Runtime deps for the graphical download manager (Setup.exe target).
+# yt-dlp and gallery-dl come from requirements.txt (they are the engines).
+PyQt6==6.7.1
+requests==2.32.3

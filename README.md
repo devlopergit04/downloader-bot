@@ -122,6 +122,46 @@ https://example.com/file.zip
 
 ---
 
+## 🖥️ پنل گرافیکی + Setup.exe
+
+علاوه بر ربات تلگرام، یک **پنل گرافیکی Desktop** هم داره که مستقیم روی سیستم (Windows/macOS/Linux) اجرا می‌شه، از اینترنت دانلود می‌کنه و فایل‌ها رو به صورت لوکال ذخیره می‌کنه. می‌تونی اونش به‌صورت **Setup.exe** منتشر کنی.
+
+**ویژگی‌های پنل:**
+- اضافه‌کردنِ چند لینک با یک دستور (هر خط یک لینک)
+- پیشرفت دانلود، سرعت و حجم به‌صورت زنده
+- pause / resume / cancel / حذف / باز کردن folder
+- تغییر مسیر ذخیره‌سازی
+- تم سبز تاریک متناسب با برند
+
+### اجرا روی سیستم (local)
+
+```bash
+pip install -r requirements.txt -r requirements-gui.txt
+python -m gui.main
+```
+
+### ساخت Setup.exe (Windows)
+
+```bash
+build_windows.bat
+```
+
+این اسکریپت:
+1. یک virtualenv ایجاد می‌کنه و دپىرومنت (PyQt6، yt-dlp، gallery-dl، PyInstaller) نصب می‌کنه
+2. با **PyInstaller** یک `DownloaderBot.exe` single-file می‌سازه
+3. با **NSIS** یک `DownloaderBot-Setup-1.0.0.exe` installer می‌سازه (shortcuts دسکتاپ + منوی استارت + uninstaller)
+
+**پیشنیازها:** Python 3.10+ و **NSIS 3.x** (`makensis` در PATH). NSIS را از <https://nsis.sourceforge.io> بگیریرش.
+
+### خروجی
+
+```
+dist/DownloaderBot.exe          # برنامه‌ی فشرده
+DownloaderBot-Setup-1.0.0.exe   # نصب‌کننده
+```
+
+---
+
 ## 📁 ساختار پروژه
 
 ```
@@ -137,11 +177,16 @@ downloader-bot/
 ├── handlers/
 │   ├── commands.py       # /start, /help, /ping, /cancel
 │   └── messages.py       # دستیار پیام‌های متنی
-├── assets/               # فایل‌های SVG تمیز و مرتب
+├── assets/               # فایل‌های SVG تمیز و مرتب + آیکون
 ├── scripts/run.sh        # دستور اجرا
 ├── Dockerfile
 ├── docker-compose.yml
-└── requirements.txt
+├── requirements.txt
+├── requirements-gui.txt  # دערי PyQt6 برای پنل گرافیکی
+├── gui/                  # پنل گرافیکی دانلود (PyQt6)
+├── gui_main.py           # نقطه‌ی ورود برای Setup.exe
+├── build/                # اسکریپت PyInstaller + NSIS Setup.exe
+└── build_windows.bat     # ساخت Setup.exe با یک دستور
 ```
 
 ---
