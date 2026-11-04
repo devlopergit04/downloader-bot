@@ -1,0 +1,111 @@
+name: Windows Release
+
+# Trigger by pushing a v* tag, publishing a Release, or manually.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag'
+        required: false
+        default: 'v1.0.0'
+  push:
+    tags: ['v*']
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build + Create Release (Windows x64 / AMD64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python (x64)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          architecture: x64
+
+      - name: Install NSIS
+        shell: powershell
+        run: |
+          choco install nsis -y --no-progress
+          $nsisDir = "C:\Program Files (x86)\NSIS"
+          if (Test-Path $nsisDir) {
+            [System.Environment]::SetEnvironmentVariable("PATH", "$nsisDir;" + [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User"), "Machine")
+          }
+
+      - name: Install dependencies
+        shell: powershell
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-gui.txt pyinstaller
+
+      - name: Build portable exe (PyInstaller)
+        shell: powershell
+        run: |
+          pyinstaller --onefile --windowed --name DownloaderBot `
+            --icon assets/logo.ico `
+            --collect-all yt_dlp --collect-all gallery_dl `
+            --collect-all certifi --collect-all websockets `
+            gui_main.py
+          if (-not (Test-Path "dist\DownloaderBot.exe")) { throw "portable exe not built" }
+
+      - name: Build Setup.exe (NSIS)
+        shell: powershell
+        run: |
+          $mak = $null
+          foreach ($c in @("C:\Program Files (x86)\NSIS\makensis.exe","C:\Program Files\NSIS\makensis.exe","C:\ProgramData\chocolatey\lib\nsis\makensis.exe")) {
+            if (Test-Path $c) { $mak = $c; break }
+          }
+          if (-not $mak) { $mak = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
+          if (-not $mak) { throw "makensis not found" }
+          Write-Host "Using makensis: $mak"
+          & $mak build/installer.nsi > nsis.log 2>&1
+          $code = $LASTEXITCODE
+          if ($code -ne 0) {
+            Get-Content nsis.log -Raw | Out-File -FilePath nsis-fail.txt -Encoding utf8
+            throw "makensis exited with $code"
+          }
+          if (-not (Test-Path "build\DownloaderBot-Setup-1.0.0.exe")) { throw "Setup.exe not built" }
+          Move-Item -Force "build\DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
+
+      - name: Stage portable exe
+        shell: powershell
+        run: Copy-Item "dist\DownloaderBot.exe" "DownloaderBot-portable-win-x64.exe"
+
+      - name: Verify assets exist
+        shell: powershell
+        run: |
+          foreach ($f in @("DownloaderBot-Setup-win-x64.exe","DownloaderBot-portable-win-x64.exe")) {
+            if (-not (Test-Path $f)) { throw "MISSING: $f" }
+            $len = (Get-Item $f).Length
+            Write-Host "$f exists ($len bytes)"
+          }
+
+      - name: Create GitHub Release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.event.release.tag_name || github.ref_name || 'v1.0.0' }}
+          name: "Downloader Bot — Windows (x64 / AMD64)"
+          body: |
+            ## Downloader Bot — Windows Setup (x64 / AMD64)
+
+            Two downloadable artifacts are attached:
+
+            - **DownloaderBot-Setup-win-x64.exe** — NSIS installer (64-bit / AMD64). Run it to install; creates desktop + Start-menu shortcuts and an uninstaller.
+            - **DownloaderBot-portable-win-x64.exe** — portable single-file executable (no install needed).
+
+            ### Note on architectures
+            AMD64 and X64 both refer to the same 64-bit x86 architecture. PyQt6 (the GUI toolkit) only ships 64-bit Windows wheels, so a 32-bit (x86) build is not available.
+
+            ### Install / run
+            Run the Setup.exe (or the portable exe), then launch **Downloader Bot** and add any media URL to download.
+
+            🤖 Built automatically by GitHub Actions.
+          files: |
+            DownloaderBot-Setup-win-x64.exe
+            DownloaderBot-portable-win-x64.exe
