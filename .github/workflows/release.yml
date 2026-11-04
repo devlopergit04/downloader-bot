@@ -1,6 +1,6 @@
 name: Windows Release
 
-# Manually trigger, or run when a GitHub Release is published.
+# Trigger by pushing a v* tag, publishing a Release, or manually.
 on:
   workflow_dispatch:
     inputs:
@@ -18,21 +18,16 @@ permissions:
 
 jobs:
   build:
-    name: Build Setup.exe (${{ matrix.arch }})
+    name: Build (Windows x64 / AMD64)
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        # x64 = AMD64 (64-bit), x86 = 32-bit.
-        arch: [x64, x86]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python (${{ matrix.arch }})
+      - name: Set up Python (x64)
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          architecture: ${{ matrix.arch }}
+          architecture: x64
 
       - name: Install NSIS
         shell: powershell
@@ -44,27 +39,27 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt -r requirements-gui.txt pyinstaller
 
-      - name: Generate icon
+      - name: Build frozen app (PyInstaller) -> portable exe
         shell: powershell
-        run: python build/make_icon.py
-
-      - name: Build frozen app (PyInstaller)
-        shell: powershell
-        run: |
-          pyinstaller --clean --noconfirm build/downloader-bot.spec
+        run: pyinstaller --clean --noconfirm build/downloader-bot.spec
 
       - name: Build Setup.exe (NSIS)
         shell: powershell
         run: |
           makensis build/installer.nsi
-          # name per architecture
-          Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-${{ matrix.arch }}.exe"
+          Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
 
-      - name: Upload artifact
+      - name: Stage portable exe
+        shell: powershell
+        run: Copy-Item "dist\DownloaderBot.exe" "DownloaderBot-portable-win-x64.exe"
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: setup-${{ matrix.arch }}
-          path: DownloaderBot-Setup-win-${{ matrix.arch }}.exe
+          name: win-x64
+          path: |
+            DownloaderBot-Setup-win-x64.exe
+            DownloaderBot-portable-win-x64.exe
 
   publish:
     name: Create GitHub Release
@@ -76,24 +71,27 @@ jobs:
         with:
           path: release-assets
 
-      - name: Show assets
+      - name: List assets
         run: ls -la release-assets
 
       - name: Create Release and upload assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag || github.event.release.tag_name || github.ref_name || 'v1.0.0' }}
-          name: "Downloader Bot — Windows Setup"
+          name: "Downloader Bot — Windows (x64 / AMD64)"
           body: |
-            ## Downloader Bot — Windows Setup
+            ## Downloader Bot — Windows Setup (x64 / AMD64)
 
-            Two Windows installers are attached:
+            Two downloadable artifacts are attached:
 
-            - **DownloaderBot-Setup-win-x64.exe** — AMD64 / 64-bit
-            - **DownloaderBot-Setup-win-x86.exe** — 32-bit (x86)
+            - **DownloaderBot-Setup-win-x64.exe** — NSIS installer (64-bit / AMD64). Run it to install; creates desktop + Start-menu shortcuts and an uninstaller.
+            - **DownloaderBot-portable-win-x64.exe** — portable single-file executable (no install needed).
 
-            ### Install
-            Run the Setup.exe, follow the installer, then launch **Downloader Bot** from the desktop or Start menu. Add any media URL to download.
+            ### Note on architectures
+            AMD64 and X64 both refer to the same 64-bit x86 architecture. PyQt6 (the GUI toolkit) only ships 64-bit Windows wheels, so a 32-bit (x86) build is not available.
+
+            ### Install / run
+            Run the Setup.exe (or the portable exe), then launch **Downloader Bot** and add any media URL to download.
 
             🤖 Built automatically by GitHub Actions.
           files: release-assets/*.exe
