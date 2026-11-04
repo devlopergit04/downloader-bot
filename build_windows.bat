@@ -36,9 +36,8 @@ pip install -r requirements.txt -r requirements-gui.txt pyinstaller
 
 REM --- build the frozen app ---------------------------------------------------
 echo [3/4] Building frozen executable with PyInstaller...
-if exist "build" rmdir /s /q "build"
 if exist "dist" rmdir /s /q "dist"
-pyinstaller --clean --noconfirm build\downloader-bot.spec
+pyinstaller --clean --noconfirm --onefile --windowed --name DownloaderBot --icon assets\logo.ico --collect-all yt_dlp --collect-all gallery_dl --collect-all certifi --collect-all websockets gui_main.py
 if errorlevel 1 (
     echo [ERROR] PyInstaller failed.
     pause & exit /b 1

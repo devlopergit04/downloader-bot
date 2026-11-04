@@ -14,6 +14,11 @@ downloads/
 logs/
 *.log
 
+# PyInstaller / build output
+dist/
+/DownloaderBot.spec
+.venv-build/
+
 # OS / editors
 .DS_Store
 .idea/

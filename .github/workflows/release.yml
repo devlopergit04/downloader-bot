@@ -39,9 +39,14 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt -r requirements-gui.txt pyinstaller
 
-      - name: Build frozen app (PyInstaller) -> portable exe
+      - name: Build portable exe (PyInstaller)
         shell: powershell
-        run: pyinstaller --clean --noconfirm build/downloader-bot.spec
+        run: |
+          pyinstaller --onefile --windowed --name DownloaderBot `
+            --icon assets/logo.ico `
+            --collect-all yt_dlp --collect-all gallery_dl `
+            --collect-all certifi --collect-all websockets `
+            gui_main.py
 
       - name: Build Setup.exe (NSIS)
         shell: powershell
