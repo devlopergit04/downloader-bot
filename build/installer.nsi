@@ -22,8 +22,8 @@ InstallDirRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP
 Section "Install ${APP_NAME} ${APP_VERSION}" Sect
     SetOutPath "$INSTDIR"
 
-    ; the PyInstaller single-file build
-    File "dist\${APP_EXEC}"
+    ; the PyInstaller single-file build (dist is at repo root, one level up from build/)
+    File "..\dist\${APP_EXEC}"
 
     ; start menu + desktop shortcuts
     CreateDirectory "$SMPROGRAMS\${APP_NAME}"
