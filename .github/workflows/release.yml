@@ -70,7 +70,7 @@ jobs:
             & $mak -V4 build/installer.nsi > nsis.log 2>&1
             $code = $LASTEXITCODE
             if ($code -ne 0) { throw "makensis exited with $code" }
-            Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
+            Move-Item -Force "build\DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
           } catch {
             $log = Get-Content nsis.log -Raw -ErrorAction SilentlyContinue
             if (-not $log) { $log = $_.Exception.Message }
