@@ -59,7 +59,6 @@ jobs:
       - name: Build Setup.exe (NSIS)
         shell: powershell
         run: |
-          # find makensis dynamically
           $mak = $null
           foreach ($c in @("C:\Program Files (x86)\NSIS\makensis.exe","C:\Program Files\NSIS\makensis.exe","C:\ProgramData\chocolatey\lib\nsis\makensis.exe")) {
             if (Test-Path $c) { $mak = $c; break }
@@ -72,12 +71,12 @@ jobs:
             & $mak build/installer.nsi *>&1 | Tee-Object -FilePath nsis.log
           }
           if ($LASTEXITCODE -ne 0 -or -not $mak) {
-            # push the log to a debug branch via the Contents API (api.github.com)
-            $log = Get-Content nsis.log -Raw -ErrorAction SilentlyContinue
-            if (-not $log) { $log = "no log" }
-            $b64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($log))
-            $body = @{ message = "NSIS debug log run ${{ github.run_id }}"; content = $b64; branch = "debug-logs" } | ConvertTo-Json
-            Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/contents/nsis-latest.log" -Method Put -Headers @{ Authorization = "Bearer $env:GITHUB_TOKEN"; "Accept" = "application/vnd.github+json" } -Body $body
+            git config user.email "actions@github.com"
+            git config user.name "GitHub Actions"
+            git checkout -q -b debug-logs 2>$null
+            git add nsis.log
+            git commit -q -m "NSIS debug log run ${{ github.run_id }}" 2>$null
+            git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" debug-logs
             exit 1
           }
           Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
