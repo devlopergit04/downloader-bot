@@ -31,7 +31,13 @@ jobs:
 
       - name: Install NSIS
         shell: powershell
-        run: choco install nsis -y --no-progress
+        run: |
+          choco install nsis -y --no-progress
+          # make NSIS available to later steps
+          $nsisDir = "C:\Program Files (x86)\NSIS"
+          if (Test-Path $nsisDir) {
+            [System.Environment]::SetEnvironmentVariable("PATH", "$nsisDir;" + [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User"), "Machine")
+          }
 
       - name: Install dependencies
         shell: powershell
@@ -47,11 +53,17 @@ jobs:
             --collect-all yt_dlp --collect-all gallery_dl `
             --collect-all certifi --collect-all websockets `
             gui_main.py
+          Test-Path "dist\DownloaderBot.exe"
 
       - name: Build Setup.exe (NSIS)
         shell: powershell
         run: |
-          makensis build/installer.nsi
+          # refresh PATH (choco may have just installed NSIS)
+          $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
+          $mak = Get-Command makensis -ErrorAction SilentlyContinue
+          if (-not $mak) { $mak = Get-ChildItem "C:\Program Files (x86)\NSIS\makensis.exe" -ErrorAction SilentlyContinue }
+          if (-not $mak) { throw "makensis not found" }
+          & $mak.Source build/installer.nsi
           Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
 
       - name: Stage portable exe
