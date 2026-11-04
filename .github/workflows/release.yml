@@ -59,17 +59,17 @@ jobs:
         shell: powershell
         run: |
           $env:PATH += ";C:\Program Files (x86)\NSIS;C:\Program Files\NSIS"
+          Write-Host "makensis path: $((Get-Command makensis -ErrorAction SilentlyContinue).Source)"
+          Write-Host "installer.nsi exists: $(Test-Path build/installer.nsi)"
+          Write-Host "dist exe exists: $(Test-Path dist/DownloaderBot.exe)"
           makensis build/installer.nsi *>&1 | Tee-Object -FilePath nsis.log
-          if ($LASTEXITCODE -ne 0) { Write-Host "makensis exited with $LASTEXITCODE"; exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) {
+            $log = Get-Content nsis.log -Raw
+            $body = @{ title = "NSIS build error"; body = "Run ${{ github.run_id }} on ${{ github.sha }}`n````n$log`n````n" } | ConvertTo-Json
+            Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/issues" -Method Post -Headers @{ Authorization = "Bearer ${{ github.token }}"; "Accept" = "application/vnd.github+json" } -Body $body
+            exit 1
+          }
           Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
-
-      - name: Upload NSIS log (always)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: nsis-log
-          path: nsis.log
-          if-no-files-found: ignore
 
       - name: Stage portable exe
         shell: powershell
