@@ -160,6 +160,16 @@ dist/DownloaderBot.exe          # برنامه‌ی فشرده
 DownloaderBot-Setup-1.0.0.exe   # نصب‌کننده
 ```
 
+### 🚀 deploy به Railway
+
+<p align="center">
+  <a href="https://railway.com/deploy/bTZe1m" target="_blank" rel="noopener noreferrer">
+    <img src="assets/railway-deploy.svg" width="100%" alt="Run In Railway — deploy on Railway"/>
+  </a>
+</p>
+
+با کلیک روی banner، پنل گرافیکی مستقیم روی **Railway** deploy می‌شود — بدون نصب، آماده‌ی اجرا.
+
 ---
 
 ## 📁 ساختار پروژه
