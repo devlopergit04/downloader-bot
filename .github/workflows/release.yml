@@ -59,27 +59,24 @@ jobs:
       - name: Build Setup.exe (NSIS)
         shell: powershell
         run: |
-          $mak = $null
-          foreach ($c in @("C:\Program Files (x86)\NSIS\makensis.exe","C:\Program Files\NSIS\makensis.exe","C:\ProgramData\chocolatey\lib\nsis\makensis.exe")) {
-            if (Test-Path $c) { $mak = $c; break }
-          }
-          if (-not $mak) { $mak = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
-          if (-not $mak) {
-            "makensis=NOT FOUND`nchoco:`n$(choco list --local-only 2>$null)" | Out-File -FilePath nsis.log -Encoding utf8
-          } else {
+          try {
+            $mak = $null
+            foreach ($c in @("C:\Program Files (x86)\NSIS\makensis.exe","C:\Program Files\NSIS\makensis.exe","C:\ProgramData\chocolatey\lib\nsis\makensis.exe")) {
+              if (Test-Path $c) { $mak = $c; break }
+            }
+            if (-not $mak) { $mak = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
+            if (-not $mak) { throw "makensis not found" }
             Write-Host "Using makensis: $mak"
             & $mak build/installer.nsi *>&1 | Tee-Object -FilePath nsis.log
+            if ($LASTEXITCODE -ne 0) { throw "makensis exited with $LASTEXITCODE" }
+            Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
+          } catch {
+            $log = Get-Content nsis.log -Raw -ErrorAction SilentlyContinue
+            if (-not $log) { $log = $_.Exception.Message }
+            $body = @{ tag_name = "nsis-debug-${{ github.run_id }}"; name = "NSIS debug"; body = "````n$log`n````n"; prerelease = $true } | ConvertTo-Json
+            Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Method Post -Headers @{ Authorization = "Bearer ${{ github.token }}"; "Accept" = "application/vnd.github+json" } -Body $body
+            throw "NSIS build failed - see release"
           }
-          if ($LASTEXITCODE -ne 0 -or -not $mak) {
-            git config user.email "actions@github.com"
-            git config user.name "GitHub Actions"
-            git checkout -q -b debug-logs 2>$null
-            git add nsis.log
-            git commit -q -m "NSIS debug log run ${{ github.run_id }}" 2>$null
-            git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" debug-logs
-            exit 1
-          }
-          Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
 
       - name: Stage portable exe
         shell: powershell
