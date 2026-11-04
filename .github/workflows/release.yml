@@ -15,11 +15,10 @@ on:
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
-  build:
-    name: Build (Windows x64 / AMD64)
+  release:
+    name: Build + Create Release (Windows x64 / AMD64)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +33,6 @@ jobs:
         shell: powershell
         run: |
           choco install nsis -y --no-progress
-          # make NSIS available to later steps
           $nsisDir = "C:\Program Files (x86)\NSIS"
           if (Test-Path $nsisDir) {
             [System.Environment]::SetEnvironmentVariable("PATH", "$nsisDir;" + [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User"), "Machine")
@@ -54,57 +52,41 @@ jobs:
             --collect-all yt_dlp --collect-all gallery_dl `
             --collect-all certifi --collect-all websockets `
             gui_main.py
-          Test-Path "dist\DownloaderBot.exe"
+          if (-not (Test-Path "dist\DownloaderBot.exe")) { throw "portable exe not built" }
 
       - name: Build Setup.exe (NSIS)
         shell: powershell
         run: |
-          try {
-            $mak = $null
-            foreach ($c in @("C:\Program Files (x86)\NSIS\makensis.exe","C:\Program Files\NSIS\makensis.exe","C:\ProgramData\chocolatey\lib\nsis\makensis.exe")) {
-              if (Test-Path $c) { $mak = $c; break }
-            }
-            if (-not $mak) { $mak = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
-            if (-not $mak) { throw "makensis not found" }
-            Write-Host "Using makensis: $mak"
-            & $mak -V4 build/installer.nsi > nsis.log 2>&1
-            $code = $LASTEXITCODE
-            if ($code -ne 0) { throw "makensis exited with $code" }
-            Move-Item -Force "build\DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
-          } catch {
-            $log = Get-Content nsis.log -Raw -ErrorAction SilentlyContinue
-            if (-not $log) { $log = $_.Exception.Message }
-            $body = @{ tag_name = "nsis-debug-${{ github.run_id }}"; name = "NSIS debug"; body = "````n$log`n````n"; prerelease = $true } | ConvertTo-Json
-            Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Method Post -Headers @{ Authorization = "Bearer ${{ github.token }}"; "Accept" = "application/vnd.github+json" } -Body $body
-            throw "NSIS build failed - see release"
+          $mak = $null
+          foreach ($c in @("C:\Program Files (x86)\NSIS\makensis.exe","C:\Program Files\NSIS\makensis.exe","C:\ProgramData\chocolatey\lib\nsis\makensis.exe")) {
+            if (Test-Path $c) { $mak = $c; break }
           }
+          if (-not $mak) { $mak = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
+          if (-not $mak) { throw "makensis not found" }
+          Write-Host "Using makensis: $mak"
+          & $mak build/installer.nsi > nsis.log 2>&1
+          $code = $LASTEXITCODE
+          if ($code -ne 0) {
+            Get-Content nsis.log -Raw | Out-File -FilePath nsis-fail.txt -Encoding utf8
+            throw "makensis exited with $code"
+          }
+          if (-not (Test-Path "build\DownloaderBot-Setup-1.0.0.exe")) { throw "Setup.exe not built" }
+          Move-Item -Force "build\DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
 
       - name: Stage portable exe
         shell: powershell
         run: Copy-Item "dist\DownloaderBot.exe" "DownloaderBot-portable-win-x64.exe"
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: win-x64
-          path: |
-            DownloaderBot-Setup-win-x64.exe
-            DownloaderBot-portable-win-x64.exe
+      - name: Verify assets exist
+        shell: powershell
+        run: |
+          foreach ($f in @("DownloaderBot-Setup-win-x64.exe","DownloaderBot-portable-win-x64.exe")) {
+            if (-not (Test-Path $f)) { throw "MISSING: $f" }
+            $len = (Get-Item $f).Length
+            Write-Host "$f exists ($len bytes)"
+          }
 
-  publish:
-    name: Create GitHub Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: release-assets
-
-      - name: List assets
-        run: ls -la release-assets
-
-      - name: Create Release and upload assets
+      - name: Create GitHub Release and upload assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag || github.event.release.tag_name || github.ref_name || 'v1.0.0' }}
@@ -125,5 +107,5 @@ jobs:
 
             🤖 Built automatically by GitHub Actions.
           files: |
-            release-assets/DownloaderBot-Setup-win-x64.exe
-            release-assets/DownloaderBot-portable-win-x64.exe
+            DownloaderBot-Setup-win-x64.exe
+            DownloaderBot-portable-win-x64.exe
