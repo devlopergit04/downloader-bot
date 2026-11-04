@@ -58,15 +58,28 @@ jobs:
       - name: Build Setup.exe (NSIS)
         shell: powershell
         run: |
-          $env:PATH += ";C:\Program Files (x86)\NSIS;C:\Program Files\NSIS"
-          Write-Host "makensis path: $((Get-Command makensis -ErrorAction SilentlyContinue).Source)"
-          Write-Host "installer.nsi exists: $(Test-Path build/installer.nsi)"
-          Write-Host "dist exe exists: $(Test-Path dist/DownloaderBot.exe)"
-          makensis build/installer.nsi *>&1 | Tee-Object -FilePath nsis.log
+          function Post-Error($title, $msg) {
+            try {
+              $body = @{ title = $title; body = $msg } | ConvertTo-Json
+              Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/issues" -Method Post -Headers @{ Authorization = "Bearer $env:GITHUB_TOKEN"; "Accept" = "application/vnd.github+json" } -Body $body
+            } catch { Write-Host "issue post failed: $_" }
+          }
+          # find makensis dynamically
+          $mak = $null
+          foreach ($c in @("C:\Program Files (x86)\NSIS\makensis.exe","C:\Program Files\NSIS\makensis.exe","C:\ProgramData\chocolatey\lib\nsis\makensis.exe")) {
+            if (Test-Path $c) { $mak = $c; break }
+          }
+          if (-not $mak) { $mak = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
+          $diag = "makensis=$mak`ninstaller=$(Test-Path build/installer.nsi)`ndistexe=$(Test-Path dist/DownloaderBot.exe)`nchoco:`n$(choco list --local-only 2>$null)"
+          if (-not $mak) {
+            Post-Error "NSIS: makensis not found" $diag
+            exit 1
+          }
+          Write-Host "Using makensis: $mak"
+          & $mak build/installer.nsi *>&1 | Tee-Object -FilePath nsis.log
           if ($LASTEXITCODE -ne 0) {
             $log = Get-Content nsis.log -Raw
-            $body = @{ title = "NSIS build error"; body = "Run ${{ github.run_id }} on ${{ github.sha }}`n````n$log`n````n" } | ConvertTo-Json
-            Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/issues" -Method Post -Headers @{ Authorization = "Bearer ${{ github.token }}"; "Accept" = "application/vnd.github+json" } -Body $body
+            Post-Error "NSIS build failed" "$diag`n````n$log`n````n"
             exit 1
           }
           Move-Item -Force "DownloaderBot-Setup-1.0.0.exe" "DownloaderBot-Setup-win-x64.exe"
