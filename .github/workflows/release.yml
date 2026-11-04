@@ -124,4 +124,6 @@ jobs:
             Run the Setup.exe (or the portable exe), then launch **Downloader Bot** and add any media URL to download.
 
             🤖 Built automatically by GitHub Actions.
-          files: release-assets/*.exe
+          files: |
+            release-assets/DownloaderBot-Setup-win-x64.exe
+            release-assets/DownloaderBot-portable-win-x64.exe
